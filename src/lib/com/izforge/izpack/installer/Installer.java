@@ -22,10 +22,17 @@
 package com.izforge.izpack.installer;
 
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.Set;
 
 import com.izforge.izpack.util.Debug;
 import com.izforge.izpack.util.StringTool;
@@ -37,7 +44,7 @@ import com.izforge.izpack.util.StringTool;
  */
 public class Installer {
 
-	public static final int INSTALLER_GUI = 0, INSTALLER_AUTO = 1, INSTALLER_CONSOLE = 2;
+	public static final int INSTALLER_GUI = 0, INSTALLER_AUTO = 1, INSTALLER_CONSOLE = 2, NEITHER = -1;
 	public static final int CONSOLE_INSTALL = 0, CONSOLE_GEN_TEMPLATE = 1, CONSOLE_FROM_TEMPLATE = 2;
 
     /*
@@ -91,8 +98,14 @@ public class Installer {
     		        }
     		        else
     		        {
-    		            type = INSTALLER_AUTO;
-    		            path = arg; 
+    		            if(arg.startsWith("-")){
+                            Installer installer = new Installer();
+                            
+                            type = installer.bootstrap(args);
+                        }else{
+                            type = INSTALLER_AUTO;
+                            path = arg;
+                        }
     		        }
 		        }
 		        catch (NoSuchElementException e) {
@@ -132,4 +145,65 @@ public class Installer {
 			System.exit(1);
 		}
 	}
+	
+	int bootstrap(String[] args)
+    {
+        int status = NEITHER;
+        
+        Properties bootstrapSpec = new Properties();
+
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(
+                "res/bootstrapSpec.properties");
+        
+        List<TemplateInstaller> objects = new ArrayList<TemplateInstaller>();
+        
+        try
+        {                        
+            if (stream != null)
+            {
+                bootstrapSpec.load(stream);
+                Set<Entry<Object, Object>> entries = bootstrapSpec.entrySet();
+                
+                for(Entry<Object, Object> entry : entries){
+                    Object objectClazz = Class.forName(entry.getValue().toString()).newInstance();
+                    
+                    if(objectClazz instanceof TemplateInstaller)
+                        objects.add((TemplateInstaller) objectClazz);
+                }
+                
+                TemplateInstaller clazz = null;
+                
+                for(TemplateInstaller object : objects){
+                    object.setArgs(args);
+                    if(object.validate()){
+                        clazz = object;
+                        break;
+                    }
+                }
+             
+                if(clazz != null)
+                    clazz.run();
+                else
+                    status = INSTALLER_GUI;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        
+        return status;
+    }
 }

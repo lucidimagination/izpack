@@ -296,6 +296,7 @@
             <!--<include name="net/n3/nanoxml/*.java"/>-->
             <include name="com/izforge/izpack/adaptator/**/*.java"/>
             <include name="com/izforge/izpack/adaptator/*.java"/>
+            <include name="com/izforge/izpack/panels/*.java"/>
         </javac>
         <copy todir="${build.dir}/com/izforge/izpack/ant/langpacks">
             <fileset dir="${src.dir}/com/izforge/izpack/ant/langpacks"/>
