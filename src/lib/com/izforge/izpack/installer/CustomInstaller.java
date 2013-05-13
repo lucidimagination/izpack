@@ -1,9 +1,9 @@
 package com.izforge.izpack.installer;
 
 
-public interface TemplateInstaller
+public interface CustomInstaller
 {
-    boolean setArgs(String[] args);
+    void setArgs(String[] args);
     boolean validate();
     void run();
 }
