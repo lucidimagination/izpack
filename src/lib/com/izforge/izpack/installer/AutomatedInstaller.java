@@ -325,7 +325,7 @@ public class AutomatedInstaller extends InstallerBase
      *
      * @throws Exception
      */
-    protected void doInstall() throws Exception
+    public void doInstall() throws Exception
     {
         // check installer conditions
         if (!checkInstallerRequirements(this.idata))

@@ -116,8 +116,11 @@ public class Installer
                             if(clazz != null){
                                 type = NEITHER;
                                 clazz.run();
-                            }else
+                                break;
+                            }else{
                                 type = INSTALLER_GUI;
+                                break;
+                            }
                         }
                         else
                         {
