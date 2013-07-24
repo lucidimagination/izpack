@@ -5,5 +5,5 @@ public interface CustomInstaller
 {
     void setArgs(String[] args);
     boolean validate();
-    void run();
+    void run() throws Exception;
 }

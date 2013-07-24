@@ -163,9 +163,14 @@ public class Installer
         }
         catch (Exception e)
         {
-            System.err.println("- ERROR -");
-            System.err.println(e.toString());
-            e.printStackTrace();
+            if(e instanceof MessageException)
+                System.out.println(e.getMessage());
+            else{
+                System.err.println("- ERROR -");
+                System.err.println(e.toString());
+                e.printStackTrace();
+            }
+            
             System.exit(1);
         }
     }
