@@ -21,6 +21,8 @@
 
 package com.izforge.izpack.panels;
 
+import org.apache.log4j.Logger;
+
 import com.izforge.izpack.installer.*;
 import com.izforge.izpack.util.AbstractUIProgressHandler;
 import com.izforge.izpack.adaptator.IXMLElement;
@@ -33,6 +35,8 @@ import com.izforge.izpack.adaptator.IXMLElement;
 public class InstallPanelAutomationHelper extends PanelAutomationHelper implements PanelAutomation,
         AbstractUIProgressHandler
 {
+    
+    private static Logger log = Logger.getLogger(InstallPanelAutomationHelper.class.getName());
 
     private int noOfPacks = 0;
 
@@ -86,7 +90,7 @@ public class InstallPanelAutomationHelper extends PanelAutomationHelper implemen
      */
     public void startAction(String name, int no_of_steps)
     {
-        System.out.println("[ Starting to unpack ]");
+        log.info("[ Starting to unpack ]");
         this.noOfPacks = no_of_steps;
     }
 
@@ -97,7 +101,7 @@ public class InstallPanelAutomationHelper extends PanelAutomationHelper implemen
      */
     public void stopAction()
     {
-        System.out.println("[ Unpacking finished ]");
+        log.info("[ Unpacking finished ]");
         boolean done = true;
     }
 
@@ -124,11 +128,9 @@ public class InstallPanelAutomationHelper extends PanelAutomationHelper implemen
      */
     public void nextStep(String packName, int stepno, int stepsize)
     {
-        System.out.print("[ Processing package: " + packName + " (");
-        System.out.print(stepno);
-        System.out.print('/');
-        System.out.print(this.noOfPacks);
-        System.out.println(") ]");
+        String message = "[ Processing package: " + packName + " (" + stepno + '/' + this.noOfPacks + ") ]";
+        
+        log.info(message);
     }
 
     /**

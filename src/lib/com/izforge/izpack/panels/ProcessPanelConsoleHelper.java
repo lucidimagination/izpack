@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.izforge.izpack.installer.AutomatedInstallData;
+import com.izforge.izpack.installer.Installer;
 import com.izforge.izpack.installer.PanelConsole;
 import com.izforge.izpack.installer.PanelConsoleHelper;
 import com.izforge.izpack.installer.ProcessPanelWorker;
@@ -16,6 +19,8 @@ public class ProcessPanelConsoleHelper extends PanelConsoleHelper implements Pan
     private int noOfJobs = 0;
 
     private int currentJob = 0;
+    
+    private static Logger log = Logger.getLogger(ProcessPanelConsoleHelper.class.getName());
 
     public void emitNotification(String message)
     {
@@ -57,24 +62,24 @@ public class ProcessPanelConsoleHelper extends PanelConsoleHelper implements Pan
     {
         if (stderr)
         {
-            System.err.println(message);
+            log.error(message);
         }
         else
         {
-            System.out.println(message);
+            log.info(message);
         }
     }
 
     public void startProcessing(int no_of_processes)
     {
-        System.out.println("[ Starting processing ]");
+        log.info("[ Starting processing ]");
         this.noOfJobs = no_of_processes;
     }
 
     public void startProcess(String name)
     {
         this.currentJob++;
-        System.out.println("Starting process " + name + " (" + Integer.toString(this.currentJob)
+        log.info("Starting process " + name + " (" + Integer.toString(this.currentJob)
                 + "/" + Integer.toString(this.noOfJobs) + ")");
     }
 

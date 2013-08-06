@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * The ShortcutPanelAutomationHelper is responsible to create Shortcuts during the automated
  * installation. Most code comes copied from the ShortcutPanel
@@ -43,6 +45,8 @@ import java.util.Vector;
  */
 public class ShortcutPanelAutomationHelper implements PanelAutomation
 {
+    
+    private static Logger log = Logger.getLogger(ShortcutPanelAutomationHelper.class.getName());
 
     // ~ Methods ****************************************************************************
 
@@ -213,7 +217,7 @@ public class ShortcutPanelAutomationHelper implements PanelAutomation
             shortcuts.add(data);
         }
 
-        System.out.print("[ Creating shortcuts ");
+        String message = "[ Creating shortcuts ";
 
         // ShortcutData data;
         for (int i = 0; i < shortcuts.size(); i++)
@@ -268,8 +272,7 @@ public class ShortcutPanelAutomationHelper implements PanelAutomation
                 try
                 {
                     // save the shortcut
-                    System.out.print(".");
-                    System.out.flush();
+                    message += ".";
 
                     shortcut.save();
 
@@ -343,18 +346,23 @@ public class ShortcutPanelAutomationHelper implements PanelAutomation
             cannot.printStackTrace();
         }
 
-        System.out.println(" done. ]");
-        System.out.print("[ Add shortcuts to uninstaller ");
+        message += "done. ]";
+        
+        log.info(message);
+        
+        
+        String uninstaller = "[ Add shortcuts to uninstaller ";
 
         UninstallData uninstallData = UninstallData.getInstance();
 
         for (int i = 0; i < files.size(); i++)
         {
             uninstallData.addFile(files.elementAt(i), true);
-            System.out.print(".");
-            System.out.flush();
+            uninstaller += ".";
         }
 
-        System.out.println(" done. ]");
+        uninstaller +="done. ]";
+        
+        log.info(uninstaller);
     }
 }

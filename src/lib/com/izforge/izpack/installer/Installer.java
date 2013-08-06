@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.izforge.izpack.util.Debug;
 import com.izforge.izpack.util.StringTool;
 
@@ -50,6 +52,8 @@ public class Installer
             CONSOLE_FROM_TEMPLATE = 2;
     
     public static final String BOOTSTRAP_FILE = "res/bootstrapSpec.properties";
+    
+    private static Logger log = Logger.getLogger(Installer.class.getName());
 
     /*
      * The main method (program entry point).
@@ -164,7 +168,7 @@ public class Installer
         catch (Exception e)
         {
             if(e instanceof MessageException)
-                System.out.println(e.getMessage());
+                log.info(e.getMessage());
             else{
                 System.err.println("- ERROR -");
                 System.err.println(e.toString());

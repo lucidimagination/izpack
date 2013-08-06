@@ -41,6 +41,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
+
 /**
  * Runs the install process in text only (no GUI) mode.
  * 
@@ -50,6 +52,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class AutomatedInstaller extends InstallerBase
 {
+    
+    private static Logger log = Logger.getLogger(AutomatedInstaller.class.getName());
 
     // there are panels which can be instantiated multiple times
     // we therefore need to select the right XML section for each
@@ -127,7 +131,7 @@ public class AutomatedInstaller extends InstallerBase
                 return true; // it is allowed not to have an installer
             }
 
-            System.out.println("[ Writing the uninstaller data ... ]");
+            log.info("[ Writing the uninstaller data ... ]");
 
             // We write the files log
             outJar.putNextEntry(new ZipEntry("install.log"));
@@ -336,7 +340,7 @@ public class AutomatedInstaller extends InstallerBase
         }
 
         // TODO: i18n
-        System.out.println("[ Starting automated installation ]");
+        log.info("[ Starting automated installation ]");
         Debug.log("[ Starting automated installation ]");
 
         ConsolePanelAutomationHelper uihelper = new ConsolePanelAutomationHelper(); 
@@ -393,11 +397,11 @@ public class AutomatedInstaller extends InstallerBase
 
             if (this.result)
             {
-                System.out.println("[ Automated installation done ]");
+                log.info("[ Automated installation done ]");
             }
             else
             {
-                System.out.println("[ Automated installation FAILED! ]");
+                log.info("[ Automated installation FAILED! ]");
             }
         }
         catch (Exception e)
@@ -405,7 +409,7 @@ public class AutomatedInstaller extends InstallerBase
             this.result = false;
             System.err.println(e.toString());
             e.printStackTrace();
-            System.out.println("[ Automated installation FAILED! ]");
+            log.info("[ Automated installation FAILED! ]");
         }
         finally
         {
@@ -537,8 +541,7 @@ public class AutomatedInstaller extends InstallerBase
                 // if defaultAnswer is true, result is ok
                 if (validationResult == Status.WARNING && validator.getDefaultAnswer())
                 {
-                    System.out
-                            .println("Configuration said, it's ok to go on, if validation is not successfull");
+                    log.info("Configuration said, it's ok to go on, if validation is not successfull");
                     return;
                 }
                 // make installation fail instantly

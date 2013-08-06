@@ -27,6 +27,8 @@ import com.izforge.izpack.adaptator.IXMLElement;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * Functions to support automated usage of the CompilePanel
  *
@@ -40,6 +42,8 @@ public class ProcessPanelAutomationHelper extends PanelAutomationHelper implemen
     private int noOfJobs = 0;
 
     private int currentJob = 0;
+    
+    private static Logger log = Logger.getLogger(ProcessPanelAutomationHelper.class.getName());
 
     /**
      * Save data for running automated.
@@ -83,11 +87,11 @@ public class ProcessPanelAutomationHelper extends PanelAutomationHelper implemen
     {
         if (stderr)
         {
-            System.err.println(message);
+            log.error(message);
         }
         else
         {
-            System.out.println(message);
+            log.info(message);
         }
     }
 
@@ -98,7 +102,7 @@ public class ProcessPanelAutomationHelper extends PanelAutomationHelper implemen
      */
     public void startProcessing(int noOfJobs)
     {
-        System.out.println("[ Starting processing ]");
+        log.info("[ Starting processing ]");
         this.noOfJobs = noOfJobs;
     }
 
@@ -108,7 +112,7 @@ public class ProcessPanelAutomationHelper extends PanelAutomationHelper implemen
     public void finishProcessing(boolean unlockPrev, boolean unlockNext)
     {
         /* FIXME: maybe we should abort if unlockNext is false...? */
-        System.out.println("[ Processing finished ]");
+        log.info("[ Processing finished ]");
     }
 
     /**
@@ -117,7 +121,7 @@ public class ProcessPanelAutomationHelper extends PanelAutomationHelper implemen
     public void startProcess(String name)
     {
         this.currentJob++;
-        System.out.println("Starting process " + name + " (" + Integer.toString(this.currentJob)
+        log.info("Starting process " + name + " (" + Integer.toString(this.currentJob)
                 + "/" + Integer.toString(this.noOfJobs) + ")");
     }
 
