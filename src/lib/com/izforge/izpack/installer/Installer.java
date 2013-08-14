@@ -34,6 +34,8 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.slf4j.helpers.Util;
 
 import com.izforge.izpack.util.Debug;
 import com.izforge.izpack.util.StringTool;
@@ -46,13 +48,14 @@ import com.izforge.izpack.util.StringTool;
 public class Installer
 {
 
-    public static final int INSTALLER_GUI = 0, INSTALLER_AUTO = 1, INSTALLER_CONSOLE = 2, NEITHER = -1;
+    public static final int INSTALLER_GUI = 0, INSTALLER_AUTO = 1, INSTALLER_CONSOLE = 2,
+            NEITHER = -1;
 
     public static final int CONSOLE_INSTALL = 0, CONSOLE_GEN_TEMPLATE = 1,
             CONSOLE_FROM_TEMPLATE = 2;
-    
+
     public static final String BOOTSTRAP_FILE = "res/bootstrapSpec.properties";
-    
+
     private static Logger log = Logger.getLogger(Installer.class.getName());
 
     /*
@@ -65,6 +68,9 @@ public class Installer
         Debug.log(" - Logger initialized at '" + new Date(System.currentTimeMillis()) + "'.");
 
         Debug.log(" - commandline args: " + StringTool.stringArrayToSpaceSeparatedString(args));
+
+        // Added log configuration
+        DOMConfigurator.configure(Util.class.getResource("/res/log4j.xml"));
 
         // OS X tweakings
         if (System.getProperty("mrj.version") != null)
@@ -113,15 +119,18 @@ public class Installer
                         if (arg.startsWith("-"))
                         {
                             Installer installer = new Installer();
-                            
+
                             Collection<Object> objects = installer.loadProperty(BOOTSTRAP_FILE);
                             CustomInstaller clazz = installer.bootstrap(args, objects);
-                            
-                            if(clazz != null){
+
+                            if (clazz != null)
+                            {
                                 type = NEITHER;
                                 clazz.run();
                                 break;
-                            }else{
+                            }
+                            else
+                            {
                                 type = INSTALLER_GUI;
                                 break;
                             }
@@ -167,32 +176,34 @@ public class Installer
         }
         catch (Exception e)
         {
-            if(e instanceof MessageException)
+            if (e instanceof MessageException)
                 log.info(e.getMessage());
-            else{
+            else
+            {
                 System.err.println("- ERROR -");
                 System.err.println(e.toString());
                 e.printStackTrace();
             }
-            
+
             System.exit(1);
         }
     }
-    
+
     public Collection<Object> loadProperty(String file) throws IOException
     {
         Properties bootstrapSpec = new Properties();
 
         InputStream stream = getClass().getClassLoader().getResourceAsStream(file);
-        
+
         bootstrapSpec.load(stream);
-        
+
         Collection<Object> values = bootstrapSpec.values();
-        
+
         return values;
     }
 
-    public CustomInstaller bootstrap(String[] args, Collection<Object> values) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    public CustomInstaller bootstrap(String[] args, Collection<Object> values)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         List<CustomInstaller> objects = new ArrayList<CustomInstaller>();
 
